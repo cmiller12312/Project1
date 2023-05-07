@@ -171,7 +171,8 @@ class Ui_Widget(object):
             self.channel_up.show()
             self.volume_slider.show()
             self.button_del.show()
-            self.channel_image.show()
+            if self.tvs[self.options.currentIndex() - 1].get_status():
+                self.channel_image.show()
             self.vol_slider_label.show()
             self.volume_down.show()
             self.volume_up.show()
@@ -184,6 +185,10 @@ class Ui_Widget(object):
         """
         self.tvs[self.options.currentIndex() - 1].power()
         self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
+        if self.tvs[self.options.currentIndex() - 1].get_status():
+            self.channel_image.show()
+        else:
+            self.channel_image.hide()
         self.save()
 
     def change_mute(self) -> None:
@@ -193,7 +198,7 @@ class Ui_Widget(object):
         """
         self.tvs[self.options.currentIndex() - 1].mute()
         self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
-        if not self.tvs[self.options.currentIndex() - 1].get_muted():
+        if self.tvs[self.options.currentIndex() - 1].get_muted():
             self.volume_slider.setValue(0)
             self.vol_slider_label.setGeometry((225 + (0 * 15) - (1 * 0)),350, 25, 25)
             self.vol_slider_label.setText(str(0))
