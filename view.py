@@ -22,9 +22,9 @@ class Ui_Widget(object):
         font.setPointSize(26)
         self.label_title.setFont(font)
         self.label_title.setAlignment(Qt.AlignCenter)
-        self.label_out = QLabel(Widget)
-        self.label_out.setObjectName(u"label_out")
-        self.label_out.setGeometry(QRect(30, 200, 340, 160))
+        # self.label_out = QLabel(Widget)
+        # self.label_out.setObjectName(u"label_out")
+        # self.label_out.setGeometry(QRect(30, 200, 340, 160))
         self.options = QComboBox(Widget)
         self.options.setObjectName(u"options")
         self.options.setGeometry(QRect(20, 70, 240, 30))
@@ -147,12 +147,12 @@ class Ui_Widget(object):
             self.in_name.show()
             self.button_create.show()
             self.label_channel.hide()
-            self.label_out.clear()
+            #self.label_out.clear()
             self.label_vol.hide()
             self.channel_down.hide()
             self.channel_up.hide()
             self.volume_slider.hide()
-            self.label_out.hide()
+            #self.label_out.hide()
             self.button_del.hide()
             self.channel_image.hide()
             self.vol_slider_label.hide()
@@ -161,7 +161,7 @@ class Ui_Widget(object):
         else:
             self.button_power.show()
             self.button_mute.show()
-            self.label_out.show()
+            #self.label_out.show()
             self.label_name.hide()
             self.in_name.hide()
             self.button_create.hide()
@@ -176,7 +176,17 @@ class Ui_Widget(object):
             self.vol_slider_label.show()
             self.volume_down.show()
             self.volume_up.show()
-            self.label_out.setText(self.tvs[self.options.currentIndex()-1].__str__())
+            #self.label_out.setText(self.tvs[self.options.currentIndex()-1].__str__())
+            if self.tvs[self.options.currentIndex() - 1].get_muted():
+                self.volume_slider.setValue(0)
+                self.vol_slider_label.setGeometry((225 + (0 * 15) - (1 * 0)), 350, 25, 25)
+                self.vol_slider_label.setText(str(0))
+            else:
+                self.volume_slider.setValue(self.tvs[self.options.currentIndex() - 1].get_volume())
+                self.vol_slider_label.setGeometry((225 + (self.volume_slider.value() * 15) - (1 * self.volume_slider.value())), 350, 25, 25)
+                self.vol_slider_label.setText(str(self.tvs[self.options.currentIndex() - 1].get_volume()))
+            self.channel_image.setPixmap(self.images[self.tvs[self.options.currentIndex() - 1].get_channel()])
+            #self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
 
     def change_power(self) -> None:
         """
@@ -184,23 +194,17 @@ class Ui_Widget(object):
         :return: None
         """
         self.tvs[self.options.currentIndex() - 1].power()
-        self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
+        #self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
         if self.tvs[self.options.currentIndex() - 1].get_status():
             self.channel_image.show()
         else:
             self.channel_image.hide()
-        self.save()
-
-    def change_mute(self) -> None:
-        """
-        changes mute of selected tv
-        :return: None
-        """
         self.tvs[self.options.currentIndex() - 1].mute()
-        self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
-        if self.tvs[self.options.currentIndex() - 1].get_muted():
+        #self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
+        self.save()
+        if not self.tvs[self.options.currentIndex() - 1].get_status():
             self.volume_slider.setValue(0)
-            self.vol_slider_label.setGeometry((225 + (0 * 15) - (1 * 0)),350, 25, 25)
+            self.vol_slider_label.setGeometry((225 + (0 * 15) - (1 * 0)), 350, 25, 25)
             self.vol_slider_label.setText(str(0))
         else:
             self.volume_slider.setValue(self.tvs[self.options.currentIndex() - 1].get_volume())
@@ -208,30 +212,49 @@ class Ui_Widget(object):
             self.vol_slider_label.setText(str(self.tvs[self.options.currentIndex() - 1].get_volume()))
         self.save()
 
+    def change_mute(self) -> None:
+        """
+        changes mute of selected tv
+        :return: None
+        """
+        if self.tvs[self.options.currentIndex() - 1].get_status():
+            self.tvs[self.options.currentIndex() - 1].mute()
+            #self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
+            if self.tvs[self.options.currentIndex() - 1].get_muted():
+                self.volume_slider.setValue(0)
+                self.vol_slider_label.setGeometry((225 + (0 * 15) - (1 * 0)),350, 25, 25)
+                self.vol_slider_label.setText(str(0))
+            else:
+                self.volume_slider.setValue(self.tvs[self.options.currentIndex() - 1].get_volume())
+                self.vol_slider_label.setGeometry((225 + (self.volume_slider.value() * 15) - (1 * self.volume_slider.value())), 350, 25, 25)
+                self.vol_slider_label.setText(str(self.tvs[self.options.currentIndex() - 1].get_volume()))
+            self.save()
+
     def change_vol_up(self) -> None:
         """
         increases volume of selected tv
         :return:
         """
-        self.tvs[self.options.currentIndex() - 1].volume_up()
-        self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
-        self.volume_slider.setValue(self.tvs[self.options.currentIndex() - 1].get_volume())
-        self.vol_slider_label.setGeometry((225 + (self.volume_slider.value() * 15) - (1 * self.volume_slider.value())), 350, 25, 25)
-        self.vol_slider_label.setText(str(self.tvs[self.options.currentIndex() - 1].get_volume()))
-        self.save()
+        if self.tvs[self.options.currentIndex() - 1].get_status():
+            self.tvs[self.options.currentIndex() - 1].volume_up()
+            #self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
+            self.volume_slider.setValue(self.tvs[self.options.currentIndex() - 1].get_volume())
+            self.vol_slider_label.setGeometry((225 + (self.volume_slider.value() * 15) - (1 * self.volume_slider.value())), 350, 25, 25)
+            self.vol_slider_label.setText(str(self.tvs[self.options.currentIndex() - 1].get_volume()))
+            self.save()
 
     def change_vol_down(self) -> None:
         """
         decreases volume of selected tv
         :return: None
         """
-
-        self.tvs[self.options.currentIndex() - 1].volume_down()
-        self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
-        self.volume_slider.setValue(self.tvs[self.options.currentIndex() - 1].get_volume())
-        self.vol_slider_label.setGeometry((225 + (self.volume_slider.value() * 15) - (1 * self.volume_slider.value())), 350, 25, 25)
-        self.vol_slider_label.setText(str(self.tvs[self.options.currentIndex() - 1].get_volume()))
-        self.save()
+        if self.tvs[self.options.currentIndex() - 1].get_status():
+            self.tvs[self.options.currentIndex() - 1].volume_down()
+            #self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
+            self.volume_slider.setValue(self.tvs[self.options.currentIndex() - 1].get_volume())
+            self.vol_slider_label.setGeometry((225 + (self.volume_slider.value() * 15) - (1 * self.volume_slider.value())), 350, 25, 25)
+            self.vol_slider_label.setText(str(self.tvs[self.options.currentIndex() - 1].get_volume()))
+            self.save()
 
     def change_channel_up(self) -> None:
         """
@@ -240,7 +263,7 @@ class Ui_Widget(object):
         """
         self.tvs[self.options.currentIndex()-1].channel_up()
         self.channel_image.setPixmap(self.images[self.tvs[self.options.currentIndex() - 1].get_channel()])
-        self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
+        #self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
         self.save()
 
     def change_channel_down(self) -> None:
@@ -250,7 +273,7 @@ class Ui_Widget(object):
         """
         self.tvs[self.options.currentIndex()-1].channel_down()
         self.channel_image.setPixmap(self.images[self.tvs[self.options.currentIndex() - 1].get_channel()])
-        self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
+        #self.label_out.setText(self.tvs[self.options.currentIndex() - 1].__str__())
         self.save()
 
     def save(self) -> None:
@@ -305,7 +328,7 @@ class Ui_Widget(object):
         self.button_mute.setText(QCoreApplication.translate("Widget",u"Mute",None))
         self.button_del.setText(QCoreApplication.translate("Widget",u"Delete",None))
         self.vol_slider_label.setText(QCoreApplication.translate("Widget",str(self.tvs[self.options.currentIndex() - 1].get_volume()) , None))
-        self.label_out.setText("")
+        #self.label_out.setText("")
         self.button_power.hide()
         self.button_mute.hide()
         self.volume_slider.hide()
@@ -313,7 +336,7 @@ class Ui_Widget(object):
         self.channel_up.hide()
         self.label_channel.hide()
         self.label_vol.hide()
-        self.label_out.hide()
+        #self.label_out.hide()
         self.button_del.hide()
         self.channel_image.hide()
         self.vol_slider_label.hide()
