@@ -177,8 +177,11 @@ class Ui_Widget(object):
                 self.volume_slider.setValue(self.tv.get_volume())
                 self.vol_slider_label.setGeometry((225 + (self.volume_slider.value() * 15) - (1 * self.volume_slider.value())), 350, 25, 25)
                 self.vol_slider_label.setText(str(self.tv.get_volume()))
-            self.channel_image.setPixmap(self.images[self.tv.get_channel()])
-
+            if self.tv.get_status():
+                self.channel_image.show()
+                self.channel_image.setPixmap(self.images[self.tv.get_channel()])
+            else:
+                self.channel_image.hide()
     def change_power(self) -> None:
         """
         changes status of selected tv
