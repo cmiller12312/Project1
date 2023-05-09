@@ -200,10 +200,12 @@ class Ui_Widget(object):
             self.volume_slider.setValue(0)
             self.vol_slider_label.setGeometry((225 + (0 * 15) - (1 * 0)), 350, 25, 25)
             self.vol_slider_label.setText(str(0))
+            self.tv.mute()
         else:
             self.volume_slider.setValue(self.tv.get_volume())
             self.vol_slider_label.setGeometry((225 + (self.volume_slider.value() * 15) - (1 * self.volume_slider.value())), 350, 25, 25)
             self.vol_slider_label.setText(str(self.tv.get_volume()))
+            self.tv.mute()
         self.save()
 
     def change_mute(self) -> None:
@@ -252,7 +254,7 @@ class Ui_Widget(object):
         increases the channel of selected tv
         :return: None
         """
-        self.tvs[self.options.currentIndex()-1].channel_up()
+        self.tv.channel_up()
         self.channel_image.setPixmap(self.images[self.tv.get_channel()])
         self.save()
 
@@ -261,7 +263,7 @@ class Ui_Widget(object):
         decreases the channel of selected tv
         :return: None
         """
-        self.tvs[self.options.currentIndex()-1].channel_down()
+        self.tv.channel_down()
         self.channel_image.setPixmap(self.images[self.tv.get_channel()])
         self.save()
 
