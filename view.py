@@ -91,7 +91,6 @@ class Ui_Widget(object):
         self.channel_image.setGeometry(QRect(225,170,150,150))
         self.retranslateUi(Widget)
         QMetaObject.connectSlotsByName(Widget)
-        self.channel_image.setPixmap(self.images[self.tvs[self.options.currentIndex() - 1].get_channel()])
     # setupUi
 
     def startup(self) -> list:
@@ -169,6 +168,9 @@ class Ui_Widget(object):
             self.vol_slider_label.show()
             self.volume_down.show()
             self.volume_up.show()
+            self.channel_image.setPixmap(self.images[self.tv.get_channel()])
+            self.vol_slider_label.setText(
+                QCoreApplication.translate("Widget", str(self.tv), None))
             if self.tv.get_muted():
                 self.volume_slider.setValue(0)
                 self.vol_slider_label.setGeometry((225 + (0 * 15) - (1 * 0)), 350, 25, 25)
@@ -314,7 +316,6 @@ class Ui_Widget(object):
         self.button_power.setText(QCoreApplication.translate("Widget",u"Power",None))
         self.button_mute.setText(QCoreApplication.translate("Widget",u"Mute",None))
         self.button_del.setText(QCoreApplication.translate("Widget",u"Delete",None))
-        self.vol_slider_label.setText(QCoreApplication.translate("Widget",str(self.tvs[self.options.currentIndex() - 1]) , None))
         self.button_power.hide()
         self.button_mute.hide()
         self.volume_slider.hide()
